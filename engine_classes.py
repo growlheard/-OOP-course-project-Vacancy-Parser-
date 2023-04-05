@@ -34,7 +34,7 @@ class HH(Engine):
         """Конструктор класса HH"""
         self.hh_vacancy = hh_vacancy
         self.url = "https://api.hh.ru/vacancies"
-        self.params = {'text': self.hh_vacancy, 'per_page': 1000, 'page': 0, 'area': 113}
+        self.params = {'text': self.hh_vacancy, 'per_page': 100, 'page': 0, 'area': 113}
         self.headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
                                       '(KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
 
@@ -51,7 +51,7 @@ class SJ(Engine):
         self.text = text
         self.params = {'keywords': self.text, 'page': 0, 'count': 1000}
         self.url = 'https://api.superjob.ru/2.0/vacancies/'
-        self.headers = {'X-Api-App-Id': 'API TOKEN'}
+        self.headers = {'X-Api-App-Id': 'v3.r.137445108.c3d74d1ed555f025111419a0ce731232b93f95a0.bbb0327d9cdde4429c598a4ef8c34caffe152036'}
 
     def get_request(self, **kwargs):
         """Метод для выполнения запроса на получение вакансий на сайте superjob.com"""

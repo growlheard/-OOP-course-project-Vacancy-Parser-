@@ -51,7 +51,7 @@ def get_hh_vacancies(keyword: str) -> None:
     hh_vacancies = []
     hh_engine = HH(keyword)
     hh_data = hh_engine.get_request()
-    for item in hh_data['items'][:1000]:
+    for item in hh_data['items'][:100]:
         name = item['name']
         link = item['alternate_url']
         description = item['snippet']['requirement']

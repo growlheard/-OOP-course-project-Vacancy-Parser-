@@ -12,7 +12,6 @@ class Connector:
 
     def __init__(self, data_file):
         self.data_file = data_file
-        self.__connect()
 
     @property
     def data_file(self):
@@ -20,14 +19,12 @@ class Connector:
 
     @data_file.setter
     def data_file(self, value):
-        # проверяем, что файл существует и имеет расширение .json
         if os.path.isfile(value) and os.path.splitext(value)[1] == '.json':
             self.__data_file = value
         else:
             raise ValueError('Файла не существует или  формат не поддерживается')
 
-        # проверяем целостность данных в файле
-        with open(self.__data_file, 'r') as f:
+        with open(self.__data_file, 'r', encoding='utf-8') as f:
             try:
                 json.load(f)
             except json.JSONDecodeError:
@@ -41,7 +38,7 @@ class Connector:
         если файл потерял актуальность в структуре данных
         """
         if not os.path.isfile(self.data_file):
-            with open(self.data_file, 'w') as f:
+            with open(self.data_file, 'w', encoding='utf-8') as f:
                 json.dump([], f)
         else:
             with open(self.data_file, 'r') as f:
@@ -54,14 +51,11 @@ class Connector:
         """
         Запись данных в файл с сохранением структуры и исходных данных
         """
-        self.__connect()
-        with open(self.data_file, 'r') as f:
-            file_data = json.load(f)
-        file_data.append(data)
-        with open(self.data_file, 'w') as f:
-            json.dump(file_data, f)
+        data = json.dumps(data, indent=2, ensure_ascii=False)
+        with open(self.__data_file, "w", encoding='utf-8') as f:
+            f.write(data)
 
-    def select(self, query):
+    def select(self):
         """
         Выбор данных из файла с применением фильтрации
         query содержит словарь, в котором ключ это поле для
@@ -69,36 +63,19 @@ class Connector:
         {'price': 1000}, должно отфильтровать данные по полю price
         и вернуть все строки, в которых цена 1000
         """
-        self.__connect()
-        with open(self.data_file, 'r') as f:
-            file_data = json.load(f)
-        filtered_data = []
-        for item in file_data:
-            match = True
-            for key, value in query.items():
-                if item.get(key) != value:
-                    match = False
-                    break
-            if match:
-                filtered_data.append(item)
-        return filtered_data
-
-    def delete(self, query):
-        """
-        Удаление записей из файла, которые соответствуют запрос,
-        как в методе select. Если в query передан пустой словарь, то
-        функция удаления не сработает
-        """
-        if not len(query):
-            return
         with open(self.__data_file, 'r', encoding='utf-8') as f:
             existing_data = json.load(f)
             f.close()
-        with open(self.__data_file, 'w', encoding='utf-8') as f:
-            existing_data = list(
+        return existing_data
+
+    def delete(self, file_name, query=None):
+        if query is None:
+            os.remove(file_name)
+        else:
+            existing_data = self.insert(file_name)
+            if isinstance(existing_data, str):
+                existing_data = json.loads(existing_data)
+            updated_data = list(
                 filter(lambda item: not all(item[key] == value for key, value in query.items()), existing_data))
-
-            json.dump(existing_data, f, indent=2, ensure_ascii=False)
-            f.close()
-
-
+            with open(file_name, 'w', encoding='utf-8') as f:
+                json.dump(updated_data, f, ensure_ascii=False, indent=4)
