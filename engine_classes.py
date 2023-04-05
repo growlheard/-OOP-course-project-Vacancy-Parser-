@@ -49,7 +49,7 @@ class SJ(Engine):
     def __init__(self, text: str):
         """Конструктор класса SJ"""
         self.text = text
-        self.params = {'keywords': self.text, 'page': 0, 'count': 1000}
+        self.params = {'keywords': self.text, 'page': 0, 'count': 100}
         self.url = 'https://api.superjob.ru/2.0/vacancies/'
         self.headers = {'X-Api-App-Id': 'v3.r.137445108.c3d74d1ed555f025111419a0ce731232b93f95a0.bbb0327d9cdde4429c598a4ef8c34caffe152036'}
 
