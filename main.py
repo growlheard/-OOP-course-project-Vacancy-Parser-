@@ -11,11 +11,10 @@ def Main():
 
     # Если выбран сайт HeadHunter
     if site.lower() == "headhunter" or site.lower() == "hh":
-        # Получение списка вакансий HeadHunter, относящихся к данной вакансии
-        get_hh_vacancies(keyword)
-
         # Создание экземпляра класса Connector для файла hh_vacancies.json
-        hh_connector = Connector('hh_vacancies.json')
+        hh_connector = Connector('vacancy.json')
+        # Получение списка вакансий HeadHunter, относящихся к данной вакансии
+        get_hh_vacancies(keyword, connector=hh_connector)
 
         # Если выбрана сортировка по времени
         if sort_by.lower() == "время" or sort_by.lower() == "time":
@@ -29,19 +28,23 @@ def Main():
         else:
             print("Неправильный ввод. Пожалуйста, введите 'время' или 'зарплата'.")
 
-        # Удаление файла hh_vacancies.json
-        hh_connector.delete('hh_vacancies.json')
+        delete_json = input("Удалить файл JSON? (да/нет): ")
+
+        if delete_json.lower() == "да" or delete_json.lower() == "yes":
+            hh_connector.delete('vacancy.json')
+        elif delete_json.lower() == "нет":
+            print("Файл JSON сохранен.")
+        else:
+            print("Неправильный ввод. Пожалуйста, введите 'да' или 'нет'.")
 
     # Если выбран сайт SuperJob
     elif site.lower() == "superjob" or site.lower() == "sj":
         # Установка количества страниц и лимита вакансий
         pages = 100
         limit = 600
+        sj_connector = Connector('vacancy.json')
         # Получение списка вакансий SuperJob, относящихся к данной вакансии
-        get_sj_vacancies(keyword, pages, limit)
-
-        # Создание экземпляра класса Connector для файла sj_vacancies.json
-        sj_connector = Connector('sj_vacancies.json')
+        get_sj_vacancies(keyword, pages, limit, connector=sj_connector)
         # Если выбрана сортировка по времени
         if sort_by.lower() == "время" or sort_by.lower() == "time":
             # Печать отсортированного списка вакансий SuperJob по времени
@@ -49,13 +52,20 @@ def Main():
         # Если выбрана сортировка по зарплате
         elif sort_by.lower() == "зарплата" or sort_by.lower() == "salary":
             # Печать отсортированного списка вакансий SuperJob по зарплате
-            print_sorted_vacancies('sj_vacancies.json')
+            print_sorted_vacancies('vacancy.json')
         # Если введен некорректный ввод критерия сортировки
         else:
             print("Неправильный ввод. Пожалуйста, введите 'время' или 'зарплата'.")
         # Если введен некорректный ввод сайта
             # Удаление файла sj_vacancies.json
-        sj_connector.delete('sj_vacancies.json')
+        delete_json = input("Удалить файл JSON? (да/нет): ")
+
+        if delete_json.lower() == "да" or delete_json.lower() == "yes":
+            sj_connector.delete('vacancy.json')
+        elif delete_json.lower() == "нет":
+            print("Файл JSON сохранен.")
+        else:
+            print("Неправильный ввод. Пожалуйста, введите 'да' или 'нет'.")
     else:
         print("Неправильный ввод. Пожалуйста, введите 'HeadHunter' или 'SuperJob'.")
 

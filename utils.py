@@ -6,9 +6,10 @@ from jobs_classes import Vacancy
 import json
 
 
-def get_sj_vacancies(keyword, pages=100, limit=None, ):
+def get_sj_vacancies(keyword, pages=100, limit=None, connector=None):
     """
     Функция для получения списка вакансий с сайта SuperJob.
+    :param connector:
     :param keyword:
     :param pages:
     :param limit:
@@ -36,15 +37,14 @@ def get_sj_vacancies(keyword, pages=100, limit=None, ):
                 break
         if len(sj_vacancies) == limit:
             break
-    with open('sj_vacancies.json', 'w', encoding='utf-8') as f:
-        json.dump([vacancy.to_dict() for vacancy in sj_vacancies], f, ensure_ascii=False, indent=4)
-
+    connector.insert([vacancy.to_dict() for vacancy in sj_vacancies])
     print(f"{len(sj_vacancies)} vacancies found.")
 
 
-def get_hh_vacancies(keyword: str) -> None:
+def get_hh_vacancies(keyword: str, connector=None) -> None:
     """
     Функция для получения списка вакансий с сайта HeadHunter.
+    :param connector:
     :param keyword:
     :return:
     """
@@ -60,8 +60,7 @@ def get_hh_vacancies(keyword: str) -> None:
         date_published = item['published_at']
         vacancy = Vacancy(name, link, description, salary, city, date_published)
         hh_vacancies.append(vacancy)
-    with open('hh_vacancies.json', 'w', encoding='utf-8') as f:
-        json.dump([vacancy.to_dict() for vacancy in hh_vacancies], f, ensure_ascii=False, indent=4)
+    connector.insert([vacancy.to_dict() for vacancy in hh_vacancies])
 
     print(f"Найдено {len(hh_vacancies)} вакансий.")
 

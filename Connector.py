@@ -13,23 +13,6 @@ class Connector:
     def __init__(self, data_file):
         self.data_file = data_file
 
-    @property
-    def data_file(self):
-        return self.__data_file
-
-    @data_file.setter
-    def data_file(self, value):
-        if os.path.isfile(value) and os.path.splitext(value)[1] == '.json':
-            self.__data_file = value
-        else:
-            raise ValueError('Файла не существует или  формат не поддерживается')
-
-        with open(self.__data_file, 'r', encoding='utf-8') as f:
-            try:
-                json.load(f)
-            except json.JSONDecodeError:
-                raise ValueError('Файл поврежден')
-
     def __connect(self):
         """
         Проверка на существование файла с данными и
@@ -52,7 +35,7 @@ class Connector:
         Запись данных в файл с сохранением структуры и исходных данных
         """
         data = json.dumps(data, indent=2, ensure_ascii=False)
-        with open(self.__data_file, "w", encoding='utf-8') as f:
+        with open('vacancy.json', "w", encoding='utf-8') as f:
             f.write(data)
 
     def select(self):
